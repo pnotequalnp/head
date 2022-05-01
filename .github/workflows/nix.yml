@@ -1,0 +1,118 @@
+name: "Nix CI"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build8107:
+    name: GHC 8.10.7
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.4.0
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v15
+      with:
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          extra-substituters = file://${{ github.workspace }}/store-cache?trusted=true
+
+    - name: Set up store cache
+      uses: actions/cache@v2
+      with:
+        path: store-cache
+        key: ghc8107
+
+    - name: Build
+      run: nix build .#ghc8107 -L
+
+    - name: Update store cache
+      run: |
+        sudo $(command -v nix) copy --to file://${PWD}/store-cache\?compression=none .#ghc8107.env
+
+  build902:
+    name: GHC 9.0.2
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.4.0
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v15
+      with:
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          extra-substituters = file://${{ github.workspace }}/store-cache?trusted=true
+
+    - name: Set up store cache
+      uses: actions/cache@v2
+      with:
+        path: store-cache
+        key: ghc902
+
+    - name: Build
+      run: nix build .#ghc902 -L
+
+    - name: Update store cache
+      run: |
+        sudo $(command -v nix) copy --to file://${PWD}/store-cache\?compression=none .#ghc902.env
+
+  build922:
+    name: GHC 9.2.2
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.4.0
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v15
+      with:
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          extra-substituters = file://${{ github.workspace }}/store-cache?trusted=true
+
+    - name: Set up store cache
+      uses: actions/cache@v2
+      with:
+        path: store-cache
+        key: ghc922
+
+    - name: Build
+      run: nix build .#ghc922 -L
+
+    - name: Update store cache
+      run: |
+        sudo $(command -v nix) copy --to file://${PWD}/store-cache\?compression=none .#ghc922.env
+        sudo $(command -v nix) copy --to file://${PWD}/store-cache\?compression=none .#ghc922
+
+  checks:
+    name: Checks
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.4.0
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v15
+      with:
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          extra-substituters = file://${{ github.workspace }}/store-cache?trusted=true
+
+    - name: Set up store cache
+      uses: actions/cache@v2
+      with:
+        path: store-cache
+        key: checks
+
+    - name: Check Cabal file
+      run: nix develop .#ci -c cabal check
+
+    - name: Check flake formatting
+      run: nix develop .#ci -c nixfmt -c flake.nix
+
+    - name: Update store cache
+      run: |
+        sudo $(command -v nix) copy --to file://${PWD}/store-cache\?compression=none .#devShells.x86_64-linux.ci

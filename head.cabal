@@ -1,0 +1,38 @@
+cabal-version: 3.0
+name:          head
+version:       0.1.0.0
+license:       ISC
+license-file:  LICENSE
+copyright:     Kevin Mullins 2022
+maintainer:    kevin@pnotequalnp.com
+author:        Kevin Mullins
+tested-with:   ghc ==8.10.7 || ==9.0.2 || ==9.2.2
+homepage:      https://github.com/pnotequalnp/head
+bug-reports:   https://github.com/pnotequalnp/head/issues
+synopsis:      Coreutils `head` Clone
+description:
+    A basic clone of `head` from coreutils. Streams the first `n` lines from files.
+
+category:      System
+
+source-repository head
+    type:     git
+    location: https://github.com/pnotequalnp/head
+
+executable head
+    main-is:            Main.hs
+    hs-source-dirs:     app
+    other-modules:      Options
+    default-language:   Haskell2010
+    default-extensions:
+        BlockArguments LambdaCase NamedFieldPuns OverloadedStrings
+
+    ghc-options:        -Wall -Wcompat -Werror=incomplete-patterns
+    build-depends:
+        base >=4.14 && <5.0,
+        bytestring >=0.10.12 && <0.12,
+        lens-family-core ^>=2.1,
+        optparse-applicative ^>=0.16.1,
+        pipes ^>=4.3.16,
+        pipes-bytestring ^>=2.1.7,
+        pipes-group ^>=1.0.12
