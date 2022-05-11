@@ -1,6 +1,6 @@
 cabal-version: 3.0
 name:          head
-version:       0.1.0.0
+version:       0.2.0.0
 license:       ISC
 license-file:  LICENSE
 copyright:     Kevin Mullins 2022
@@ -22,10 +22,15 @@ source-repository head
 executable head
     main-is:            Main.hs
     hs-source-dirs:     app
-    other-modules:      Options
+    other-modules:
+        Options
+        Paths_head
+
+    autogen-modules:    Paths_head
     default-language:   Haskell2010
     default-extensions:
-        BlockArguments LambdaCase NamedFieldPuns OverloadedStrings
+        BlockArguments ImportQualifiedPost LambdaCase NamedFieldPuns
+        OverloadedStrings
 
     ghc-options:        -Wall -Wcompat -Werror=incomplete-patterns
     build-depends:
